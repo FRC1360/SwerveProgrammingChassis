@@ -1,0 +1,21 @@
+[
+  {
+    "type": "java",
+    "name": "jar (in project Reefscape2025-AdvantageKitSwerve-Triton)",
+    "extensions": [
+      {
+        "name": "Sim GUI",
+        "libName": "/Users/adityachoudhuri/Github WPILIB/Reefscape2025-AdvantageKitSwerve-Triton/build/jni/release/libhalsim_gui.dylib",
+        "defaultEnabled": false
+      },
+      {
+        "name": "Use Real DriverStation",
+        "libName": "/Users/adityachoudhuri/Github WPILIB/Reefscape2025-AdvantageKitSwerve-Triton/build/jni/release/libhalsim_ds_socket.dylib",
+        "defaultEnabled": false
+      }
+    ],
+    "environment": {},
+    "libraryDir": "/Users/adityachoudhuri/Github WPILIB/Reefscape2025-AdvantageKitSwerve-Triton/build/jni/release",
+    "mainClassName": "frc.robot.Main"
+  }
+]
