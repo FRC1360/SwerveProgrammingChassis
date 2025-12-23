@@ -54,9 +54,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     /* PhotonVision Implementation */
     public final SwerveCamera frontLeftSwerveCamera;
     public final SwerveCamera frontRightSwerveCamera;
-    public final SwerveCamera backLeftSwerveCamera;
+    // public final SwerveCamera backLeftSwerveCamera;
     // public final SwerveCamera backrightSwerveCamera;
-    private SwerveCamera[] swerveCameras = new SwerveCamera[3];
+    private SwerveCamera[] swerveCameras = new SwerveCamera[2];
 
     /* PhotonVision Simulation Implementation */
 
@@ -146,25 +146,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Transform3d(
                 new Translation3d(0.2809, 0.2809, 0.192),
                 new Rotation3d(0, -Math.toRadians(10), Math.toRadians(45))),
-            "photoncamera_30");
+            "photoncamera_fl");
 
         frontRightSwerveCamera =
             new SwerveCamera(
                 new Transform3d(
                     new Translation3d(0.2809, -0.2809, 0.192),
                     new Rotation3d(0, -Math.toRadians(10), Math.toRadians(-45))),
-                "photoncamera_4f");
-
-        backLeftSwerveCamera =
-            new SwerveCamera(
-                new Transform3d(
-                    new Translation3d(-0.2809, 0.2809, 0.192),
-                    new Rotation3d(0, -Math.toRadians(10), Math.toRadians(135))),
-                "photoncamera_b2");
+                "photoncamera_fr");
 
         swerveCameras[0] = frontLeftSwerveCamera;
         swerveCameras[1] = frontRightSwerveCamera;
-        swerveCameras[2] = backLeftSwerveCamera;
     }
 
     /**
@@ -195,25 +187,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Transform3d(
                 new Translation3d(0.2809, 0.2809, 0.192),
                 new Rotation3d(0, -Math.toRadians(10), Math.toRadians(45))),
-            "photoncamera_30");
+            "photoncamera_fl");
 
         frontRightSwerveCamera =
             new SwerveCamera(
                 new Transform3d(
                     new Translation3d(0.2809, -0.2809, 0.192),
                     new Rotation3d(0, -Math.toRadians(10), Math.toRadians(-45))),
-                "photoncamera_4f");
-
-        backLeftSwerveCamera =
-            new SwerveCamera(
-                new Transform3d(
-                    new Translation3d(-0.2809, 0.2809, 0.192),
-                    new Rotation3d(0, -Math.toRadians(10), Math.toRadians(135))),
-                "photoncamera_b2");
+                "photoncamera_fr");
 
         swerveCameras[0] = frontLeftSwerveCamera;
         swerveCameras[1] = frontRightSwerveCamera;
-        swerveCameras[2] = backLeftSwerveCamera;
     }
 
     /**
@@ -252,25 +236,17 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             new Transform3d(
                 new Translation3d(0.2809, 0.2809, 0.192),
                 new Rotation3d(0, -Math.toRadians(10), Math.toRadians(45))),
-            "photoncamera_30");
+            "photoncamera_fl");
 
         frontRightSwerveCamera =
             new SwerveCamera(
                 new Transform3d(
                     new Translation3d(0.2809, -0.2809, 0.192),
                     new Rotation3d(0, -Math.toRadians(10), Math.toRadians(-45))),
-                "photoncamera_4f");
-
-        backLeftSwerveCamera =
-            new SwerveCamera(
-                new Transform3d(
-                    new Translation3d(-0.2809, 0.2809, 0.192),
-                    new Rotation3d(0, -Math.toRadians(10), Math.toRadians(135))),
-                "photoncamera_b2");
+                "photoncamera_fr");
 
         swerveCameras[0] = frontLeftSwerveCamera;
         swerveCameras[1] = frontRightSwerveCamera;
-        swerveCameras[2] = backLeftSwerveCamera;
     }
 
     /**
@@ -380,7 +356,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void updatePose() {
         for (SwerveCamera swerveCamera : swerveCameras) {
             swerveCamera.updatePipelineResults();
-            swerveCamera.updateSimPose(super.getState().Pose);
+            // swerveCamera.updateSimPose(super.getState().Pose);
 
             Optional<EstimatedRobotPose> visionEst = Optional.empty();
 
