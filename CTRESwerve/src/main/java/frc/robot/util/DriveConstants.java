@@ -34,4 +34,5 @@ public class DriveConstants {
     public static final double tagRKp = 0.2 * 0.6;
     public static final double tagRKi = (1.2 * 0.2) / 0.37;
     public static final double tagRKd = (3 * 0.2 * 0.37) / 40;
+    public static final double tagRTolerance = 2;
 }

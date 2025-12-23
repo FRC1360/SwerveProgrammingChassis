@@ -51,6 +51,18 @@ public class RobotContainer {
             )
         );
 
+        joystick.x().whileTrue(
+            DriveCommands.aimAtTag(
+                drivetrain,
+                drivetrain.frontRightSwerveCamera,
+                7,
+                () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+                () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
+                () -> -joystick.getRightX() * DriveConstants.MaxAngularRate,
+                true
+            )
+        );
+
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
         final var idle = new SwerveRequest.Idle();
