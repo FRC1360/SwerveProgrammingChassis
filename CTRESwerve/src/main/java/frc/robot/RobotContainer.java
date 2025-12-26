@@ -4,20 +4,18 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.commands.DriveCommands;
+import frc.robot.commands.driveCommands.AimAtTagCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.orbitSwerveRequests.FieldCentricFacingTag;
 import frc.robot.util.DriveConstants;
 
 public class RobotContainer {
@@ -26,6 +24,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
         .withDeadband(DriveConstants.MaxSpeed * DriveConstants.joystickDeadbandDecimal).withRotationalDeadband(DriveConstants.MaxAngularRate * DriveConstants.joystickDeadbandDecimal) // Add a 10% deadband
         .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -35,6 +34,24 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
+    private final FieldCentricFacingTag driveFacingTag = new FieldCentricFacingTag()
+        .withDeadband(DriveConstants.MaxSpeed * DriveConstants.joystickDeadbandDecimal)
+        .withDriveRequestType(DriveRequestType.OpenLoopVoltage) // Use open-loop control for drive motors
+        .withHeadingPID(DriveConstants.tagRKp, DriveConstants.tagRKi, DriveConstants.tagRKd)
+        .withAppliedCamera(drivetrain.frontRightSwerveCamera)
+        .withTargetTagID(7);
+
+    private final AimAtTagCommand aimAtTagCommand = new AimAtTagCommand(
+        drivetrain,
+        drivetrain.frontRightSwerveCamera,
+        7,
+        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
+        () -> -joystick.getRightX() * DriveConstants.MaxAngularRate,
+        true,
+        false
+    );
+    
     public RobotContainer() {
         configureBindings();
     }
@@ -52,16 +69,14 @@ public class RobotContainer {
         );
 
         joystick.x().whileTrue(
-            DriveCommands.aimAtTag(
-                drivetrain,
-                drivetrain.frontRightSwerveCamera,
-                7,
-                () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
-                () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
-                () -> -joystick.getRightX() * DriveConstants.MaxAngularRate,
-                true
+            drivetrain.applyRequest(() ->
+                driveFacingTag
+                    .withVelocityX(-joystick.getLeftY() * DriveConstants.MaxSpeed)
+                    .withVelocityY(-joystick.getLeftX() * DriveConstants.MaxSpeed)
             )
         );
+
+        joystick.y().whileTrue(aimAtTagCommand);
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.

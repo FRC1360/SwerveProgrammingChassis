@@ -14,6 +14,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -159,5 +160,9 @@ public class SwerveCamera {
   // Update Vision Pose
   public void updateSimPose(Pose2d robotPose) {
     photonVisionSystemSim.update(robotPose);
+  }
+
+  public Transform3d getRobotToCamera() {
+    return this.robotToCamera;
   }
 }
