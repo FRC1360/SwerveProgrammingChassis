@@ -8,11 +8,15 @@ import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.driveCommands.AimAtTagCommand;
+import frc.robot.commands.driveCommands.AlignToTagCommand;
+import frc.robot.commands.driveCommands.AlignToTagCommandStrafe;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.orbitSwerveRequests.FieldCentricFacingTag;
@@ -51,6 +55,25 @@ public class RobotContainer {
         true,
         false
     );
+
+    private final AlignToTagCommandStrafe alignToTagCommandFL = new AlignToTagCommandStrafe(
+        drivetrain,
+        drivetrain.frontLeftSwerveCamera,
+        7,
+        false,
+        new Pose2d(0.0, 0.0, new Rotation2d(0.0)),
+        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed
+    );
+    private final AlignToTagCommandStrafe alignToTagCommandFR = new AlignToTagCommandStrafe(
+        drivetrain,
+        drivetrain.frontRightSwerveCamera,
+        7,
+        false,
+        new Pose2d(0.0, 0.0, new Rotation2d(0.0)),
+        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed
+    );
     
     public RobotContainer() {
         configureBindings();
@@ -68,15 +91,8 @@ public class RobotContainer {
             )
         );
 
-        joystick.x().whileTrue(
-            drivetrain.applyRequest(() ->
-                driveFacingTag
-                    .withVelocityX(-joystick.getLeftY() * DriveConstants.MaxSpeed)
-                    .withVelocityY(-joystick.getLeftX() * DriveConstants.MaxSpeed)
-            )
-        );
-
-        joystick.y().whileTrue(aimAtTagCommand);
+        joystick.x().whileTrue(alignToTagCommandFL);
+        joystick.y().whileTrue(alignToTagCommandFR);
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.

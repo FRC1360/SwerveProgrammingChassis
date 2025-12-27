@@ -15,6 +15,9 @@ package frc.robot.util;
 
 import static edu.wpi.first.units.Units.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.generated.TunerConstants;
 
 public class DriveConstants {
@@ -26,13 +29,19 @@ public class DriveConstants {
     public static final double tagXKp = 2.0;
     public static final double tagXKi = 0.0;
     public static final double tagXKd = 0.0;
-
+    
     public static final double tagYKp = 2.0;
     public static final double tagYKi = 0.0;
     public static final double tagYKd = 0.0;
-
+    
     public static final double tagRKp = 0.2 * 0.6;
     public static final double tagRKi = (1.2 * 0.2) / 0.37;
     public static final double tagRKd = (3 * 0.2 * 0.37) / 40;
     public static final double tagRTolerance = 2;
+
+    public static final double MaxAngularSpeedRadians = MaxAngularRate * 2 * Math.PI; // Used for PID
+    public static final double MaxAngularAccelerationRadians = MaxAngularSpeedRadians * 5; // Used for PID
+    public static final Pose2d holonomicTolerance = new Pose2d(
+        0.03, 0.03, Rotation2d.fromDegrees(2)
+    );
 }
