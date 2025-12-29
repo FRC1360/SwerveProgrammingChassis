@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.driveCommands;
+package frc.robot.commands.drive;
 
 import java.util.List;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -16,12 +16,11 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveCamera;
@@ -37,7 +36,7 @@ public class AlignToTagCommand extends Command {
 
     private final HolonomicDriveController holoController;
     private final SwerveRequest.RobotCentric driveRequest;
-    private final Pose2d tagToRobotOffset;
+    private final Pose2d robotToAprilTagOffset;
     
     private final StructPublisher<Pose2d> tagPosePublisher =
         NetworkTableInstance.getDefault()
@@ -55,20 +54,20 @@ public class AlignToTagCommand extends Command {
         SwerveCamera camera,
         int tagId,
         boolean hasEndCondition,
-        Pose2d tagToRobotOffset
+        Pose2d robotToAprilTagOffset
     ) {
         // Use addRequirements() here to declare subsystem dependencies.
         this.drivetrain = drivetrain;
         this.camera = camera;
         this.tagId = tagId;
         this.hasEndCondition = hasEndCondition;
-        this.tagToRobotOffset = tagToRobotOffset;
+        this.robotToAprilTagOffset = robotToAprilTagOffset;
 
         this.holoController = new HolonomicDriveController(
-            new PIDController(4.0, 0.0, 0.0),
-            new PIDController(4.0, 0.0, 0.0),
+            new PIDController(3.0, 0.0, 0.0),
+            new PIDController(3.0, 0.0, 0.0),
             new ProfiledPIDController(
-                3.0, 0.0, 0.1,
+                5.0, 0.0, 0.0,
                 new TrapezoidProfile.Constraints(DriveConstants.MaxAngularSpeedRadians, DriveConstants.MaxAngularAccelerationRadians)
             )
         );
@@ -90,8 +89,10 @@ public class AlignToTagCommand extends Command {
     public void execute() {
         PhotonTrackedTarget aprilTag = new PhotonTrackedTarget();
         boolean targetVisible = false;
-        Pose2d currentTagPose = new Pose2d();
+        Pose2d currentRobotPose = new Pose2d();
         ChassisSpeeds outputRobotSpeeds;
+        Transform3d robotToCamera = camera.getRobotToCamera();
+        Rotation2d targetHeading = new Rotation2d();
 
         List<PhotonPipelineResult> results = camera.getPipelineResults();
         if (!results.isEmpty()) {
@@ -107,64 +108,38 @@ public class AlignToTagCommand extends Command {
         }
 
         if (targetVisible) {
-            SmartDashboard.putNumber("Holonomic Controller/April Tag Theta", 
-                Units.radiansToDegrees(aprilTag.getBestCameraToTarget().getRotation().getZ())
-            );
-            SmartDashboard.putNumber("Holonomic Controller/April Tag Yaw", 
-                aprilTag.getYaw()
-            );
-            SmartDashboard.putNumber("Holonomic Controller/April Tag dx", 
-                aprilTag.getBestCameraToTarget().getX()
-            );
-            SmartDashboard.putNumber("Holonomic Controller/April Tag dy", 
-                aprilTag.getBestCameraToTarget().getY()
-            );
-
-            SmartDashboard.putNumber("Holonomic Controller/Target Heading", 
-                Rotation2d.fromRadians(aprilTag.getBestCameraToTarget().getRotation().getZ())
-                .plus(Rotation2d.fromRadians(camera.getRobotToCamera().getRotation().getZ()))
-                .times(-1)
-                .minus(Rotation2d.fromDegrees(aprilTag.getYaw()))
-                .getDegrees()
-            );
-            
-            currentTagPose = new Pose2d(
+            currentRobotPose = new Pose2d(
                 aprilTag.getBestCameraToTarget().getX(),
                 aprilTag.getBestCameraToTarget().getY(),
-                aprilTag.getBestCameraToTarget().getRotation().toRotation2d()
+                Rotation2d.fromDegrees(180.0)
+                    .minus(Rotation2d.fromRadians(robotToCamera.getRotation().getZ()))
             );
-            currentTagPose = currentTagPose.rotateBy(
-                Rotation2d.fromRadians(camera.getRobotToCamera().getRotation().getZ())
+            currentRobotPose = currentRobotPose.rotateBy(
+                Rotation2d.fromDegrees(180)
+                .minus(Rotation2d.fromRadians(aprilTag.getBestCameraToTarget().getRotation().getZ()))
+            );
+            targetHeading = 
+                Rotation2d.fromRadians(aprilTag.getBestCameraToTarget().getRotation().getZ())
+                .plus(Rotation2d.fromRadians(robotToCamera.getRotation().getZ()))
+                .times(-1)
+                .minus(Rotation2d.fromDegrees(aprilTag.getYaw()));
+            
+            robotPosePublisher.accept(currentRobotPose);
+            tagPosePublisher.accept(robotToAprilTagOffset);
+
+            outputRobotSpeeds = holoController.calculate(
+                currentRobotPose,
+                robotToAprilTagOffset,
+                0.0,
+                targetHeading
             );
 
-            outputRobotSpeeds =
-                holoController.calculate(
-                    tagToRobotOffset,
-                    currentTagPose,
-                    0.0,
-                    Rotation2d.fromDegrees(aprilTag.getYaw())
-                        .minus(currentTagPose.getRotation())
-                        .plus(Rotation2d.fromDegrees(180))
-                        .plus(Rotation2d.fromRadians(camera.getRobotToCamera().getRotation().getZ()))
-                );
-
-            tagPosePublisher.accept(currentTagPose);
-            robotPosePublisher.accept(tagToRobotOffset);
-
-            if (!holoController.atReference())
-                drivetrain.setControl(
-                    driveRequest
-                        .withVelocityX(outputRobotSpeeds.vxMetersPerSecond)
-                        .withVelocityY(outputRobotSpeeds.vyMetersPerSecond)
-                        .withRotationalRate(-outputRobotSpeeds.omegaRadiansPerSecond)
-                );
-            else 
-                drivetrain.setControl(
-                    driveRequest
-                        .withVelocityX(0.0)
-                        .withVelocityY(0.0)
-                        .withRotationalRate(0.0)
-                );
+            drivetrain.setControl(
+                driveRequest
+                    .withVelocityX(outputRobotSpeeds.vxMetersPerSecond)
+                    .withVelocityY(outputRobotSpeeds.vyMetersPerSecond)
+                    .withRotationalRate(outputRobotSpeeds.omegaRadiansPerSecond)
+            );
         }
     }
 

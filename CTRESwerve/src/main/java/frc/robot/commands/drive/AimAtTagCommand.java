@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.driveCommands;
+package frc.robot.commands.drive;
 
 import java.util.List;
 import java.util.function.DoubleSupplier;
@@ -25,7 +25,6 @@ public class AimAtTagCommand extends Command {
     private final int tagId;
     private final DoubleSupplier xSupplier;
     private final DoubleSupplier ySupplier;
-    private final DoubleSupplier rotSupplier;
     private final boolean isFieldRelative;
     private final boolean hasEndCondition;
 
@@ -38,7 +37,6 @@ public class AimAtTagCommand extends Command {
         int tagId,
         DoubleSupplier xSupplier,
         DoubleSupplier ySupplier,
-        DoubleSupplier rotSupplier,
         boolean isFieldRelative,
         boolean hasEndCondition
     ) {
@@ -48,7 +46,6 @@ public class AimAtTagCommand extends Command {
         this.tagId = tagId;
         this.xSupplier = xSupplier;
         this.ySupplier = ySupplier;
-        this.rotSupplier = rotSupplier;
         this.isFieldRelative = isFieldRelative;
         this.hasEndCondition = hasEndCondition;
 

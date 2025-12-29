@@ -14,9 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import frc.robot.commands.driveCommands.AimAtTagCommand;
-import frc.robot.commands.driveCommands.AlignToTagCommand;
-import frc.robot.commands.driveCommands.AlignToTagCommandStrafe;
+import frc.robot.commands.drive.AimAtTagCommand;
+import frc.robot.commands.drive.AlignToTagCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.orbitSwerveRequests.FieldCentricFacingTag;
@@ -45,34 +44,38 @@ public class RobotContainer {
         .withAppliedCamera(drivetrain.frontRightSwerveCamera)
         .withTargetTagID(7);
 
-    private final AimAtTagCommand aimAtTagCommand = new AimAtTagCommand(
+    private final AimAtTagCommand aimAtTagCommandFL = new AimAtTagCommand(
+        drivetrain,
+        drivetrain.frontLeftSwerveCamera,
+        7,
+        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
+        true,
+        false
+    );
+    private final AimAtTagCommand aimAtTagCommandFR = new AimAtTagCommand(
         drivetrain,
         drivetrain.frontRightSwerveCamera,
         7,
         () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
         () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
-        () -> -joystick.getRightX() * DriveConstants.MaxAngularRate,
         true,
         false
     );
 
-    private final AlignToTagCommandStrafe alignToTagCommandFL = new AlignToTagCommandStrafe(
+    private final AlignToTagCommand alignToTagCommandFL = new AlignToTagCommand(
         drivetrain,
         drivetrain.frontLeftSwerveCamera,
         7,
         false,
-        new Pose2d(0.0, 0.0, new Rotation2d(0.0)),
-        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
-        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed
+        new Pose2d(0.8, 0.0, new Rotation2d(0.0))
     );
-    private final AlignToTagCommandStrafe alignToTagCommandFR = new AlignToTagCommandStrafe(
+    private final AlignToTagCommand alignToTagCommandFR = new AlignToTagCommand(
         drivetrain,
         drivetrain.frontRightSwerveCamera,
         7,
         false,
-        new Pose2d(0.0, 0.0, new Rotation2d(0.0)),
-        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
-        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed
+        new Pose2d(0.8, 0.0, new Rotation2d(0.0))
     );
     
     public RobotContainer() {
@@ -91,8 +94,10 @@ public class RobotContainer {
             )
         );
 
-        joystick.x().whileTrue(alignToTagCommandFL);
-        joystick.y().whileTrue(alignToTagCommandFR);
+        joystick.leftTrigger(0.9).whileTrue(alignToTagCommandFL);
+        joystick.rightTrigger(0.9).whileTrue(alignToTagCommandFR);
+        joystick.leftBumper().whileTrue(aimAtTagCommandFL);
+        joystick.rightBumper().whileTrue(aimAtTagCommandFR);
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
@@ -114,7 +119,7 @@ public class RobotContainer {
         // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // // reset the field-centric heading on left bumper press
-        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        joystick.b().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
