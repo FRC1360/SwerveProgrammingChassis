@@ -7,11 +7,18 @@ package frc.robot.commands.drive;
 import java.util.List;
 import java.util.function.DoubleSupplier;
 
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonPipelineResult;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.SwerveCamera;
@@ -27,6 +34,12 @@ public class AimAtTagCommand extends Command {
     private final DoubleSupplier ySupplier;
     private final boolean isFieldRelative;
     private final boolean hasEndCondition;
+
+    /*
+     * This variable determines whether the algorithm will directly use the aprilTag's yaw or the pose estimation yaw
+     */
+    private final double methodThreshold = 0.7;
+    private double methodBias;
 
     private final PIDController tagRPidController;
 
@@ -48,6 +61,8 @@ public class AimAtTagCommand extends Command {
         this.ySupplier = ySupplier;
         this.isFieldRelative = isFieldRelative;
         this.hasEndCondition = hasEndCondition;
+
+        this.methodBias = this.methodThreshold;
 
         this.tagRPidController = new PIDController(DriveConstants.tagRKp, DriveConstants.tagRKi, DriveConstants.tagRKd);
 
@@ -83,8 +98,22 @@ public class AimAtTagCommand extends Command {
 
         xSpeed = xSupplier.getAsDouble();
         ySpeed = ySupplier.getAsDouble();
-        if (targetVisible) {
+        SmartDashboard.putNumber("target visible", targetVisible ? 1.0 : 0.0);
+        calculateMethodBias(targetVisible);
+        SmartDashboard.putNumber("method selected", methodBias);
+
+        if ((methodBias > methodThreshold) && targetVisible) {
             rotSpeed = tagRPidController.calculate(targetYawDegrees, 0.0);
+        } else if ((methodBias > methodThreshold) && !targetVisible) {
+            rotSpeed = 0.0;
+        } else if (methodBias < methodThreshold) {
+            rotSpeed = -tagRPidController.calculate(
+                PhotonUtils.getYawToPose(
+                    drivetrain.samplePoseAt(Utils.getCurrentTimeSeconds()).get(),
+                    AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeWelded).getTagPose(tagId).get().toPose2d()
+                ).getDegrees(),
+                Units.radiansToDegrees(camera.getRobotToCamera().getRotation().getZ())
+            );
         }
 
         // exclude rotational deadbands as controlling rot thru PID
@@ -112,5 +141,13 @@ public class AimAtTagCommand extends Command {
     public boolean isFinished() {
         if (hasEndCondition) return tagRPidController.atSetpoint();
         return false;
+    }
+
+    // Implementation of the method determining algorithm
+    private void calculateMethodBias(boolean isTargetVisible) {
+        if (isTargetVisible) methodBias = methodBias + 0.5;
+        else methodBias = methodBias - 0.1;
+
+        methodBias = MathUtil.clamp(methodBias, 0.0, 1.0);
     }
 }

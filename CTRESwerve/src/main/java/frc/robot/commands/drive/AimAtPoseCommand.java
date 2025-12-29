@@ -64,11 +64,10 @@ public class AimAtPoseCommand extends Command {
         double xSpeed, ySpeed, rotSpeed = 0.0;
         Pose2d robotPose = drivetrain.samplePoseAt(Utils.getCurrentTimeSeconds()).get();
         double deltaHeading = PhotonUtils.getYawToPose(robotPose, poseToAimAt).getDegrees();
-        System.out.println(deltaHeading);
 
         xSpeed = xSupplier.getAsDouble();
         ySpeed = ySupplier.getAsDouble();
-        rotSpeed = tagRPidController.calculate(-deltaHeading, 0.0);
+        rotSpeed = -tagRPidController.calculate(deltaHeading, 0.0);
 
         // exclude rotational deadbands as controlling rot thru PID
         if (isFieldRelative) {
