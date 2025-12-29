@@ -6,14 +6,19 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 
+import java.security.Key;
+
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+import frc.robot.commands.drive.AimAtPoseCommand;
 import frc.robot.commands.drive.AimAtTagCommand;
 import frc.robot.commands.drive.AlignToTagCommand;
 import frc.robot.generated.TunerConstants;
@@ -63,6 +68,15 @@ public class RobotContainer {
         false
     );
 
+    private final AimAtPoseCommand aimAtPoseCommand = new AimAtPoseCommand(
+        drivetrain,
+        AprilTagFieldLayout.loadField(AprilTagFields.k2025ReefscapeAndyMark).getTagPose(7).get().toPose2d(),
+        () -> -joystick.getLeftY() * DriveConstants.MaxSpeed,
+        () -> -joystick.getLeftX() * DriveConstants.MaxSpeed,
+        true,
+        false
+    );
+
     private final AlignToTagCommand alignToTagCommandFL = new AlignToTagCommand(
         drivetrain,
         drivetrain.frontLeftSwerveCamera,
@@ -96,8 +110,11 @@ public class RobotContainer {
 
         joystick.leftTrigger(0.9).whileTrue(alignToTagCommandFL);
         joystick.rightTrigger(0.9).whileTrue(alignToTagCommandFR);
+
         joystick.leftBumper().whileTrue(aimAtTagCommandFL);
         joystick.rightBumper().whileTrue(aimAtTagCommandFR);
+
+        joystick.a().whileTrue(aimAtPoseCommand);
 
         // Idle while the robot is disabled. This ensures the configured
         // neutral mode is applied to the drive motors while disabled.
