@@ -25,7 +25,7 @@ import frc.robot.subsystems.SwerveCamera;
 import frc.robot.util.DriveConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AimAtTagCommand extends Command {
+public class AimAtTagPoseCommand extends Command {
 
     private final CommandSwerveDrivetrain drivetrain;
     private final SwerveCamera camera;
@@ -44,7 +44,7 @@ public class AimAtTagCommand extends Command {
     private final PIDController tagRPidController;
 
     /** Creates a new aimAtTag. */
-    public AimAtTagCommand(
+    public AimAtTagPoseCommand(
         CommandSwerveDrivetrain drivetrain,
         SwerveCamera camera,
         int tagId,
@@ -98,9 +98,9 @@ public class AimAtTagCommand extends Command {
 
         xSpeed = xSupplier.getAsDouble();
         ySpeed = ySupplier.getAsDouble();
-        SmartDashboard.putNumber("target visible", targetVisible ? 1.0 : 0.0);
         calculateMethodBias(targetVisible);
-        SmartDashboard.putNumber("method selected", methodBias);
+        SmartDashboard.putNumber("Commands/" + getName() + "/targetVisible", targetVisible ? 1.0 : 0.0);
+        SmartDashboard.putNumber("Commands/" + getName() + "/methodBias", methodBias);
 
         if ((methodBias > methodThreshold) && targetVisible) {
             rotSpeed = tagRPidController.calculate(targetYawDegrees, 0.0);

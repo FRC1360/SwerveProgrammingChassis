@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.commands.drive.AimAtPoseCommand;
-import frc.robot.commands.drive.AimAtTagCommand;
-import frc.robot.commands.drive.AlignToTagCommand;
+import frc.robot.commands.drive.AimAtTagPoseCommand;
+import frc.robot.commands.drive.AlignToTagPoseCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.orbitSwerveRequests.FieldCentricFacingTag;
@@ -49,7 +49,7 @@ public class RobotContainer {
         .withAppliedCamera(drivetrain.frontRightSwerveCamera)
         .withTargetTagID(7);
 
-    private final AimAtTagCommand aimAtTagCommandFL = new AimAtTagCommand(
+    private final AimAtTagPoseCommand aimAtTagCommandFL = new AimAtTagPoseCommand(
         drivetrain,
         drivetrain.frontLeftSwerveCamera,
         7,
@@ -58,7 +58,7 @@ public class RobotContainer {
         true,
         false
     );
-    private final AimAtTagCommand aimAtTagCommandFR = new AimAtTagCommand(
+    private final AimAtTagPoseCommand aimAtTagCommandFR = new AimAtTagPoseCommand(
         drivetrain,
         drivetrain.frontRightSwerveCamera,
         7,
@@ -77,14 +77,14 @@ public class RobotContainer {
         false
     );
 
-    private final AlignToTagCommand alignToTagCommandFL = new AlignToTagCommand(
+    private final AlignToTagPoseCommand alignToTagCommandFL = new AlignToTagPoseCommand(
         drivetrain,
         drivetrain.frontLeftSwerveCamera,
         7,
         false,
         new Pose2d(0.8, 0.0, new Rotation2d(0.0))
     );
-    private final AlignToTagCommand alignToTagCommandFR = new AlignToTagCommand(
+    private final AlignToTagPoseCommand alignToTagCommandFR = new AlignToTagPoseCommand(
         drivetrain,
         drivetrain.frontRightSwerveCamera,
         7,
