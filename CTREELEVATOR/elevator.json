@@ -1,0 +1,1183 @@
+{
+  "schema_version": "1",
+  "gear_ratio": 4,
+  "mass_kg": 5,
+  "drum_radius_m": 0.019100799999999998,
+  "max_height_m": 0,
+  "elevator_gui_info": {
+    "num_motors": 2,
+    "gearbox_type": 0,
+    "elevator_upper_bound": 37.48486328125,
+    "has_determined_inverts": true,
+    "has_verified_lower_limits": false,
+    "has_verified_upper_limits": false,
+    "current_page_index": 3
+  },
+  "motor_controllers": [
+    {
+      "name": "motor_id_50",
+      "device": {
+        "model": "Talon FX vers. C",
+        "id": 50,
+        "canbus": "rio",
+        "canivore_serial_no": "",
+        "compliancy": 19,
+        "user_device_name": "ELEVATOR LEFT",
+        "configs": [
+          {
+            "name": "Motor Output",
+            "summary": "Configs that directly affect motor output.",
+            "description": "Includes motor invert, neutral mode, and other features related to motor output.",
+            "ordinal": -15,
+            "configs": [
+              {
+                "name": "Neutral Mode",
+                "summary": "The state of the motor controller bridge when output is neutral or disabled.",
+                "ordinal": 0,
+                "type": "NeutralModeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1904,
+                "signal_name": "Config_NeutralMode",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "Coast",
+                "enum_values": [
+                  {
+                    "name": "Coast",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "Brake",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Current Limits",
+            "summary": "Configs that directly affect current limiting features.",
+            "description": "Contains the supply/stator current limit thresholds and whether to enable them.",
+            "ordinal": -14,
+            "configs": [
+              {
+                "name": "Stator Current Limit",
+                "summary": "The amount of current allowed in the motor (motoring and regen current).  Note this requires StatorCurrentLimitEnable to be true.\n\nFor torque current control, this is applied in addition to the PeakForwardTorqueCurrent and PeakReverseTorqueCurrent in TorqueCurrentConfigs.\n\nStator current is directly proportional to torque, so this limit can be used to restrict the torque output of the motor, such as preventing wheel slip for a drivetrain.  Additionally, stator current limits can prevent brownouts during acceleration; supply current will never exceed the stator current limit and is often significantly lower than stator current.\n\nA reasonable starting point for a stator current limit is 120 A, with values commonly ranging from 80-160 A. Mechanisms with a hard stop may need a smaller limit to reduce the torque applied when running into the hard stop.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "",
+                "units": "A",
+                "min_value": 0,
+                "max_value": 800,
+                "signal_id": 1906,
+                "signal_name": "Config_StatorCurrentLimit",
+                "default_value": 120,
+                "value": 120,
+                "param_value": 120,
+                "enum_values": []
+              },
+              {
+                "name": "Stator Current Limit Enable",
+                "summary": "Enable motor stator current limiting.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1907,
+                "signal_name": "Config_StatorCurrLimitEn",
+                "default_value": 1,
+                "value": 1,
+                "param_value": true,
+                "enum_values": []
+              }
+            ]
+          },
+          {
+            "name": "Slot 0",
+            "summary": "Gains for the specified slot.",
+            "description": "If this slot is selected, these gains are used in closed loop control requests.",
+            "ordinal": -13,
+            "configs": [
+              {
+                "name": "kP",
+                "summary": "Proportional gain.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by error in the input, the units should be defined as units of output per unit of input error. For example, when controlling velocity using a duty cycle closed loop, the units for the proportional gain will be duty cycle per rps of error, or 1/rps.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1877,
+                "signal_name": "Slot0_kP",
+                "default_value": 0,
+                "value": 16,
+                "param_value": 16,
+                "enum_values": []
+              },
+              {
+                "name": "kI",
+                "summary": "Integral gain.",
+                "ordinal": 1,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by error in the input integrated over time (in units of seconds), the units should be defined as units of output per unit of integrated input error. For example, when controlling velocity using a duty cycle closed loop, integrating velocity over time results in rps * s = rotations. Therefore, the units for the integral gain will be duty cycle per rotation of accumulated error, or 1/rot.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1878,
+                "signal_name": "Slot0_kI",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kD",
+                "summary": "Derivative gain.",
+                "ordinal": 2,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the derivative of error in the input with respect to time (in units of seconds), the units should be defined as units of output per unit of the differentiated input error. For example, when controlling velocity using a duty cycle closed loop, the derivative of velocity with respect to time is rot per sec\u00B2, which is acceleration. Therefore, the units for the derivative gain will be duty cycle per unit of acceleration error, or 1/(rot per sec\u00B2).",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1879,
+                "signal_name": "Slot0_kD",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kS",
+                "summary": "Static feedforward gain.",
+                "ordinal": 3,
+                "type": "double",
+                "description": "This is added to the closed loop output. The unit for this constant is dependent on the control mode, typically fractional duty cycle, voltage, or torque current.\n\nThe sign is typically determined by reference velocity when using position, velocity, and Motion Magic\u00AE closed loop modes. However, when using position closed loop with zero velocity reference (no motion profiling), the application can instead use the position closed loop error by setting the Static Feedforward Sign configuration parameter.  When doing so, we recommend the minimal amount of kS, otherwise the motor output may dither when closed loop error is near zero.",
+                "units": "",
+                "min_value": -128,
+                "max_value": 127,
+                "signal_id": 1880,
+                "signal_name": "Slot0_kS",
+                "default_value": 0,
+                "value": 0.2,
+                "param_value": 0.2,
+                "enum_values": []
+              },
+              {
+                "name": "kV",
+                "summary": "Velocity feedforward gain.",
+                "ordinal": 4,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the requested velocity, the units should be defined as units of output per unit of requested input velocity. For example, when controlling velocity using a duty cycle closed loop, the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1881,
+                "signal_name": "Slot0_kV",
+                "default_value": 0,
+                "value": 0.48,
+                "param_value": 0.48,
+                "enum_values": []
+              },
+              {
+                "name": "kA",
+                "summary": "Acceleration feedforward gain.",
+                "ordinal": 5,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the requested acceleration, the units should be defined as units of output per unit of requested input acceleration. For example, when controlling velocity using a duty cycle closed loop, the units for the acceleration feedfoward gain will be duty cycle per requested rot per sec\u00B2, or 1/(rot per sec\u00B2).",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1882,
+                "signal_name": "Slot0_kA",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kG",
+                "summary": "Gravity feedforward/feedback gain. The type of gravity compensation is selected by GravityType.",
+                "ordinal": 6,
+                "type": "double",
+                "description": "This is added to the closed loop output. The sign is determined by the gravity type. The unit for this constant is dependent on the control mode, typically fractional duty cycle, voltage, or torque current.\n\nNote that kG may be negative for some counterbalanced mechanisms.",
+                "units": "",
+                "min_value": -128,
+                "max_value": 127,
+                "signal_id": 1883,
+                "signal_name": "Slot0_kG",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Gravity Type",
+                "summary": "Gravity feedforward/feedback type.\n\nThis determines the type of the gravity feedforward/feedback.\n\nChoose Elevator_Static for systems where the gravity feedforward is constant, such as an elevator. The gravity feedforward output will always have the same sign.\n\nChoose Arm_Cosine for systems where the gravity feedback is dependent on the angular position of the mechanism, such as an arm. The gravity feedback output will vary depending on the mechanism angular position. Note that the sensor offset and ratios must be configured so that the sensor reports a position of 0 when the mechanism is horizonal (parallel to the ground), and the reported sensor position is 1:1 with the mechanism.",
+                "ordinal": 7,
+                "type": "GravityTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1884,
+                "signal_name": "Slot0_kG_Type",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "Elevator_Static",
+                "enum_values": [
+                  {
+                    "name": "Elevator_Static",
+                    "comment": "The system\u0027s gravity feedforward is constant, such as an elevator. The gravity feedforward output will always have the same sign.",
+                    "value": 0
+                  },
+                  {
+                    "name": "Arm_Cosine",
+                    "comment": "The system\u0027s gravity feedback is dependent on the angular position of the mechanism, such as an arm. The gravity feedback output will vary depending on the mechanism angular position. Note that the sensor offset and ratios must be configured so that the sensor reports a position of 0 when the mechanism is horizonal (parallel to the ground), and the reported sensor position is 1:1 with the mechanism.",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Feedback",
+            "summary": "Configs that affect the feedback of this motor controller.",
+            "description": "Includes feedback sensor source, any offsets for the feedback sensor, and various ratios to describe the relationship between the sensor and the mechanism for closed looping.",
+            "ordinal": -10,
+            "configs": [
+              {
+                "name": "Sensor To Mechanism Ratio",
+                "summary": "The ratio of sensor rotations to the mechanism\u0027s output, where a ratio greater than 1 is a reduction.\n\nThis is equivalent to the mechanism\u0027s gear ratio if the sensor is located on the input of a gearbox.  If sensor is on the output of a gearbox, then this is typically set to 1.\n\nWe recommend against using this config to perform onboard unit conversions.  Instead, unit conversions should be performed in robot code using the units library.\n\nIf this is set to zero, the device will reset back to one.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "",
+                "units": "scalar",
+                "min_value": -1000,
+                "max_value": 1000,
+                "signal_id": 1918,
+                "signal_name": "Config_SensorToMechanismRatio",
+                "default_value": 1,
+                "value": 4,
+                "param_value": 4,
+                "enum_values": []
+              }
+            ]
+          },
+          {
+            "name": "Hardware Limit Switch",
+            "summary": "Configs that change how the motor controller behaves under different limit switch states.",
+            "description": "Includes configs such as enabling limit switches, configuring the remote sensor ID, the source, and the position to set on limit.",
+            "ordinal": -4,
+            "configs": [
+              {
+                "name": "Forward Limit Enable",
+                "summary": "If enabled, motor output is set to neutral when the forward limit switch is asserted and positive output is requested.",
+                "ordinal": -2,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1931,
+                "signal_name": "Config_ForwardLimitEnable",
+                "default_value": 1,
+                "value": 1,
+                "param_value": true,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Autoset Position Enable",
+                "summary": "If enabled, the position is automatically set to a specific value, specified by ForwardLimitAutosetPositionValue, when the forward limit switch is asserted.",
+                "ordinal": -1,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1929,
+                "signal_name": "Config_ForwardLimitAutosetPosEnable",
+                "default_value": 0,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Remote Sensor ID",
+                "summary": "Device ID of the remote device if using remote limit switch features for the forward limit switch.",
+                "ordinal": 0,
+                "type": "int",
+                "description": "",
+                "units": "",
+                "min_value": 0,
+                "max_value": 62,
+                "signal_id": 1933,
+                "signal_name": "Config_ForwardLimitRemoteSensorID",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Source",
+                "summary": "Determines where to poll the forward limit switch.  This defaults to the forward limit switch pin on the limit switch connector.\n\nChoose RemoteTalonFX to use the forward limit switch attached to another Talon FX on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).\n\nChoose RemoteCANifier to use the forward limit switch attached to another CANifier on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).\n\nChoose RemoteCANcoder to use another CANcoder on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                "ordinal": 0,
+                "type": "ForwardLimitSourceValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1932,
+                "signal_name": "Config_ForwardLimitSource",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "LimitSwitchPin",
+                "enum_values": [
+                  {
+                    "name": "LimitSwitchPin",
+                    "comment": "Use the forward limit switch pin on the limit switch connector.",
+                    "value": 0
+                  },
+                  {
+                    "name": "RemoteTalonFX",
+                    "comment": "Use the forward limit switch attached to another Talon FX on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).",
+                    "value": 1
+                  },
+                  {
+                    "name": "RemoteCANifier",
+                    "comment": "Use the forward limit switch attached to another CANifier on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).",
+                    "value": 2
+                  },
+                  {
+                    "name": "RemoteCANcoder",
+                    "comment": "Use another CANcoder on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                    "value": 4
+                  },
+                  {
+                    "name": "RemoteCANrange",
+                    "comment": "Use another CANrange on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANrange proximity detect is tripped.",
+                    "value": 6
+                  },
+                  {
+                    "name": "RemoteCANdiS1",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 1 Input (S1IN) pin matches the configured closed state.",
+                    "value": 7
+                  },
+                  {
+                    "name": "RemoteCANdiS2",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 2 Input (S2IN) pin matches the configured closed state.",
+                    "value": 8
+                  },
+                  {
+                    "name": "Disabled",
+                    "comment": "Disable the forward limit switch.",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "name": "Forward Limit Type",
+                "summary": "Determines if the forward limit switch is normally-open (default) or normally-closed.",
+                "ordinal": 0,
+                "type": "ForwardLimitTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1928,
+                "signal_name": "Config_ForwardLimitType",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "NormallyOpen",
+                "enum_values": [
+                  {
+                    "name": "NormallyOpen",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "NormallyClosed",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "name": "Reverse Limit Autoset Position Enable",
+                "summary": "If enabled, the position is automatically set to a specific value, specified by ReverseLimitAutosetPositionValue, when the reverse limit switch is asserted.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1935,
+                "signal_name": "Config_ReverseLimitAutosetPosEnable",
+                "default_value": 0,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Enable",
+                "summary": "If enabled, motor output is set to neutral when reverse limit switch is asseted and negative output is requested.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1937,
+                "signal_name": "Config_ReverseLimitEnable",
+                "default_value": 1,
+                "value": 1,
+                "param_value": true,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Remote Sensor ID",
+                "summary": "Device ID of the remote device if using remote limit switch features for the reverse limit switch.",
+                "ordinal": 0,
+                "type": "int",
+                "description": "",
+                "units": "",
+                "min_value": 0,
+                "max_value": 62,
+                "signal_id": 1939,
+                "signal_name": "Config_ReverseLimitRemoteSensorID",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Source",
+                "summary": "Determines where to poll the reverse limit switch.  This defaults to the reverse limit switch pin on the limit switch connector.\n\nChoose RemoteTalonFX to use the reverse limit switch attached to another Talon FX on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).\n\nChoose RemoteCANifier to use the reverse limit switch attached to another CANifier on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).\n\nChoose RemoteCANcoder to use another CANcoder on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                "ordinal": 0,
+                "type": "ReverseLimitSourceValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1938,
+                "signal_name": "Config_ReverseLimitSource",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "LimitSwitchPin",
+                "enum_values": [
+                  {
+                    "name": "LimitSwitchPin",
+                    "comment": "Use the reverse limit switch pin on the limit switch connector.",
+                    "value": 0
+                  },
+                  {
+                    "name": "RemoteTalonFX",
+                    "comment": "Use the reverse limit switch attached to another Talon FX on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).",
+                    "value": 1
+                  },
+                  {
+                    "name": "RemoteCANifier",
+                    "comment": "Use the reverse limit switch attached to another CANifier on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).",
+                    "value": 2
+                  },
+                  {
+                    "name": "RemoteCANcoder",
+                    "comment": "Use another CANcoder on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                    "value": 4
+                  },
+                  {
+                    "name": "RemoteCANrange",
+                    "comment": "Use another CANrange on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANrange proximity detect is tripped.",
+                    "value": 6
+                  },
+                  {
+                    "name": "RemoteCANdiS1",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 1 Input (S1IN) pin matches the configured closed state.",
+                    "value": 7
+                  },
+                  {
+                    "name": "RemoteCANdiS2",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when CANdi\u2122 Signal 2 Input (S2IN) pin matches the configured closed state.",
+                    "value": 8
+                  },
+                  {
+                    "name": "Disabled",
+                    "comment": "Disable the reverse limit switch.",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "name": "Reverse Limit Type",
+                "summary": "Determines if the reverse limit switch is normally-open (default) or normally-closed.",
+                "ordinal": 0,
+                "type": "ReverseLimitTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1934,
+                "signal_name": "Config_ReverseLimitType",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "NormallyOpen",
+                "enum_values": [
+                  {
+                    "name": "NormallyOpen",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "NormallyClosed",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Motion Magic",
+            "summary": "Configs for Motion Magic\u00AE.",
+            "description": "Includes Velocity, Acceleration, Jerk, and Expo parameters.",
+            "ordinal": -2,
+            "configs": [
+              {
+                "name": "Motion Magic Cruise Velocity",
+                "summary": "This is the maximum velocity Motion Magic\u00AE based control modes are allowed to use.  Motion Magic\u00AE Velocity control modes do not use this config.\n\nWhen using Motion Magic\u00AE Expo control modes, setting this to 0 will allow the profile to run to the max possible velocity based on Expo_kV.",
+                "ordinal": -5,
+                "type": "double",
+                "description": "",
+                "units": "rot per sec",
+                "min_value": 0,
+                "max_value": 9999,
+                "signal_id": 1944,
+                "signal_name": "Config_MotionMagicCruiseVelocity",
+                "default_value": 0,
+                "value": 12,
+                "param_value": 12,
+                "enum_values": []
+              },
+              {
+                "name": "Motion Magic Acceleration",
+                "summary": "This is the target acceleration Motion Magic\u00AE based control modes are allowed to use.  Motion Magic\u00AE Expo control modes do not use this config.",
+                "ordinal": -4,
+                "type": "double",
+                "description": "",
+                "units": "rot per sec\u00B2",
+                "min_value": 0,
+                "max_value": 9999,
+                "signal_id": 1945,
+                "signal_name": "Config_MotionMagicAcceleration",
+                "default_value": 0,
+                "value": 80,
+                "param_value": 80,
+                "enum_values": []
+              }
+            ]
+          }
+        ]
+      },
+      "motor_arrangement": "",
+      "orientation": "CounterClockwise_Positive",
+      "leader": null,
+      "selected_attached_motor": null
+    },
+    {
+      "name": "motor_id_61",
+      "device": {
+        "model": "Talon FX vers. C",
+        "id": 61,
+        "canbus": "rio",
+        "canivore_serial_no": "",
+        "compliancy": 19,
+        "user_device_name": "ELEVATOR RIGHT",
+        "configs": [
+          {
+            "name": "Motor Output",
+            "summary": "Configs that directly affect motor output.",
+            "description": "Includes motor invert, neutral mode, and other features related to motor output.",
+            "ordinal": -15,
+            "configs": [
+              {
+                "name": "Neutral Mode",
+                "summary": "The state of the motor controller bridge when output is neutral or disabled.",
+                "ordinal": 0,
+                "type": "NeutralModeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1904,
+                "signal_name": "Config_NeutralMode",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "Coast",
+                "enum_values": [
+                  {
+                    "name": "Coast",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "Brake",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Current Limits",
+            "summary": "Configs that directly affect current limiting features.",
+            "description": "Contains the supply/stator current limit thresholds and whether to enable them.",
+            "ordinal": -14,
+            "configs": [
+              {
+                "name": "Stator Current Limit",
+                "summary": "The amount of current allowed in the motor (motoring and regen current).  Note this requires StatorCurrentLimitEnable to be true.\n\nFor torque current control, this is applied in addition to the PeakForwardTorqueCurrent and PeakReverseTorqueCurrent in TorqueCurrentConfigs.\n\nStator current is directly proportional to torque, so this limit can be used to restrict the torque output of the motor, such as preventing wheel slip for a drivetrain.  Additionally, stator current limits can prevent brownouts during acceleration; supply current will never exceed the stator current limit and is often significantly lower than stator current.\n\nA reasonable starting point for a stator current limit is 120 A, with values commonly ranging from 80-160 A. Mechanisms with a hard stop may need a smaller limit to reduce the torque applied when running into the hard stop.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "",
+                "units": "A",
+                "min_value": 0,
+                "max_value": 800,
+                "signal_id": 1906,
+                "signal_name": "Config_StatorCurrentLimit",
+                "default_value": 120,
+                "value": 120,
+                "param_value": 120,
+                "enum_values": []
+              },
+              {
+                "name": "Stator Current Limit Enable",
+                "summary": "Enable motor stator current limiting.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1907,
+                "signal_name": "Config_StatorCurrLimitEn",
+                "default_value": 1,
+                "value": 1,
+                "param_value": true,
+                "enum_values": []
+              }
+            ]
+          },
+          {
+            "name": "Slot 0",
+            "summary": "Gains for the specified slot.",
+            "description": "If this slot is selected, these gains are used in closed loop control requests.",
+            "ordinal": -13,
+            "configs": [
+              {
+                "name": "kP",
+                "summary": "Proportional gain.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by error in the input, the units should be defined as units of output per unit of input error. For example, when controlling velocity using a duty cycle closed loop, the units for the proportional gain will be duty cycle per rps of error, or 1/rps.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1877,
+                "signal_name": "Slot0_kP",
+                "default_value": 0,
+                "value": 16,
+                "param_value": 16,
+                "enum_values": []
+              },
+              {
+                "name": "kI",
+                "summary": "Integral gain.",
+                "ordinal": 1,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by error in the input integrated over time (in units of seconds), the units should be defined as units of output per unit of integrated input error. For example, when controlling velocity using a duty cycle closed loop, integrating velocity over time results in rps * s = rotations. Therefore, the units for the integral gain will be duty cycle per rotation of accumulated error, or 1/rot.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1878,
+                "signal_name": "Slot0_kI",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kD",
+                "summary": "Derivative gain.",
+                "ordinal": 2,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the derivative of error in the input with respect to time (in units of seconds), the units should be defined as units of output per unit of the differentiated input error. For example, when controlling velocity using a duty cycle closed loop, the derivative of velocity with respect to time is rot per sec\u00B2, which is acceleration. Therefore, the units for the derivative gain will be duty cycle per unit of acceleration error, or 1/(rot per sec\u00B2).",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1879,
+                "signal_name": "Slot0_kD",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kS",
+                "summary": "Static feedforward gain.",
+                "ordinal": 3,
+                "type": "double",
+                "description": "This is added to the closed loop output. The unit for this constant is dependent on the control mode, typically fractional duty cycle, voltage, or torque current.\n\nThe sign is typically determined by reference velocity when using position, velocity, and Motion Magic\u00AE closed loop modes. However, when using position closed loop with zero velocity reference (no motion profiling), the application can instead use the position closed loop error by setting the Static Feedforward Sign configuration parameter.  When doing so, we recommend the minimal amount of kS, otherwise the motor output may dither when closed loop error is near zero.",
+                "units": "",
+                "min_value": -128,
+                "max_value": 127,
+                "signal_id": 1880,
+                "signal_name": "Slot0_kS",
+                "default_value": 0,
+                "value": 0.2,
+                "param_value": 0.2,
+                "enum_values": []
+              },
+              {
+                "name": "kV",
+                "summary": "Velocity feedforward gain.",
+                "ordinal": 4,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the requested velocity, the units should be defined as units of output per unit of requested input velocity. For example, when controlling velocity using a duty cycle closed loop, the units for the velocity feedfoward gain will be duty cycle per requested rps, or 1/rps.",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1881,
+                "signal_name": "Slot0_kV",
+                "default_value": 0,
+                "value": 0.48,
+                "param_value": 0.48,
+                "enum_values": []
+              },
+              {
+                "name": "kA",
+                "summary": "Acceleration feedforward gain.",
+                "ordinal": 5,
+                "type": "double",
+                "description": "The units for this gain is dependent on the control mode. Since this gain is multiplied by the requested acceleration, the units should be defined as units of output per unit of requested input acceleration. For example, when controlling velocity using a duty cycle closed loop, the units for the acceleration feedfoward gain will be duty cycle per requested rot per sec\u00B2, or 1/(rot per sec\u00B2).",
+                "units": "",
+                "min_value": 0,
+                "max_value": 3.4E+38,
+                "signal_id": 1882,
+                "signal_name": "Slot0_kA",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "kG",
+                "summary": "Gravity feedforward/feedback gain. The type of gravity compensation is selected by GravityType.",
+                "ordinal": 6,
+                "type": "double",
+                "description": "This is added to the closed loop output. The sign is determined by the gravity type. The unit for this constant is dependent on the control mode, typically fractional duty cycle, voltage, or torque current.\n\nNote that kG may be negative for some counterbalanced mechanisms.",
+                "units": "",
+                "min_value": -128,
+                "max_value": 127,
+                "signal_id": 1883,
+                "signal_name": "Slot0_kG",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Gravity Type",
+                "summary": "Gravity feedforward/feedback type.\n\nThis determines the type of the gravity feedforward/feedback.\n\nChoose Elevator_Static for systems where the gravity feedforward is constant, such as an elevator. The gravity feedforward output will always have the same sign.\n\nChoose Arm_Cosine for systems where the gravity feedback is dependent on the angular position of the mechanism, such as an arm. The gravity feedback output will vary depending on the mechanism angular position. Note that the sensor offset and ratios must be configured so that the sensor reports a position of 0 when the mechanism is horizonal (parallel to the ground), and the reported sensor position is 1:1 with the mechanism.",
+                "ordinal": 7,
+                "type": "GravityTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1884,
+                "signal_name": "Slot0_kG_Type",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "Elevator_Static",
+                "enum_values": [
+                  {
+                    "name": "Elevator_Static",
+                    "comment": "The system\u0027s gravity feedforward is constant, such as an elevator. The gravity feedforward output will always have the same sign.",
+                    "value": 0
+                  },
+                  {
+                    "name": "Arm_Cosine",
+                    "comment": "The system\u0027s gravity feedback is dependent on the angular position of the mechanism, such as an arm. The gravity feedback output will vary depending on the mechanism angular position. Note that the sensor offset and ratios must be configured so that the sensor reports a position of 0 when the mechanism is horizonal (parallel to the ground), and the reported sensor position is 1:1 with the mechanism.",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Feedback",
+            "summary": "Configs that affect the feedback of this motor controller.",
+            "description": "Includes feedback sensor source, any offsets for the feedback sensor, and various ratios to describe the relationship between the sensor and the mechanism for closed looping.",
+            "ordinal": -10,
+            "configs": [
+              {
+                "name": "Sensor To Mechanism Ratio",
+                "summary": "The ratio of sensor rotations to the mechanism\u0027s output, where a ratio greater than 1 is a reduction.\n\nThis is equivalent to the mechanism\u0027s gear ratio if the sensor is located on the input of a gearbox.  If sensor is on the output of a gearbox, then this is typically set to 1.\n\nWe recommend against using this config to perform onboard unit conversions.  Instead, unit conversions should be performed in robot code using the units library.\n\nIf this is set to zero, the device will reset back to one.",
+                "ordinal": 0,
+                "type": "double",
+                "description": "",
+                "units": "scalar",
+                "min_value": -1000,
+                "max_value": 1000,
+                "signal_id": 1918,
+                "signal_name": "Config_SensorToMechanismRatio",
+                "default_value": 1,
+                "value": 4,
+                "param_value": 4,
+                "enum_values": []
+              }
+            ]
+          },
+          {
+            "name": "Hardware Limit Switch",
+            "summary": "Configs that change how the motor controller behaves under different limit switch states.",
+            "description": "Includes configs such as enabling limit switches, configuring the remote sensor ID, the source, and the position to set on limit.",
+            "ordinal": -4,
+            "configs": [
+              {
+                "name": "Forward Limit Enable",
+                "summary": "If enabled, motor output is set to neutral when the forward limit switch is asserted and positive output is requested.",
+                "ordinal": -2,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1931,
+                "signal_name": "Config_ForwardLimitEnable",
+                "default_value": 1,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Autoset Position Enable",
+                "summary": "If enabled, the position is automatically set to a specific value, specified by ForwardLimitAutosetPositionValue, when the forward limit switch is asserted.",
+                "ordinal": -1,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1929,
+                "signal_name": "Config_ForwardLimitAutosetPosEnable",
+                "default_value": 0,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Remote Sensor ID",
+                "summary": "Device ID of the remote device if using remote limit switch features for the forward limit switch.",
+                "ordinal": 0,
+                "type": "int",
+                "description": "",
+                "units": "",
+                "min_value": 0,
+                "max_value": 62,
+                "signal_id": 1933,
+                "signal_name": "Config_ForwardLimitRemoteSensorID",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Forward Limit Source",
+                "summary": "Determines where to poll the forward limit switch.  This defaults to the forward limit switch pin on the limit switch connector.\n\nChoose RemoteTalonFX to use the forward limit switch attached to another Talon FX on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).\n\nChoose RemoteCANifier to use the forward limit switch attached to another CANifier on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).\n\nChoose RemoteCANcoder to use another CANcoder on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                "ordinal": 0,
+                "type": "ForwardLimitSourceValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1932,
+                "signal_name": "Config_ForwardLimitSource",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "LimitSwitchPin",
+                "enum_values": [
+                  {
+                    "name": "LimitSwitchPin",
+                    "comment": "Use the forward limit switch pin on the limit switch connector.",
+                    "value": 0
+                  },
+                  {
+                    "name": "RemoteTalonFX",
+                    "comment": "Use the forward limit switch attached to another Talon FX on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).",
+                    "value": 1
+                  },
+                  {
+                    "name": "RemoteCANifier",
+                    "comment": "Use the forward limit switch attached to another CANifier on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).",
+                    "value": 2
+                  },
+                  {
+                    "name": "RemoteCANcoder",
+                    "comment": "Use another CANcoder on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                    "value": 4
+                  },
+                  {
+                    "name": "RemoteCANrange",
+                    "comment": "Use another CANrange on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CANrange proximity detect is tripped.",
+                    "value": 6
+                  },
+                  {
+                    "name": "RemoteCANdiS1",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 1 Input (S1IN) pin matches the configured closed state.",
+                    "value": 7
+                  },
+                  {
+                    "name": "RemoteCANdiS2",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 2 Input (S2IN) pin matches the configured closed state.",
+                    "value": 8
+                  },
+                  {
+                    "name": "Disabled",
+                    "comment": "Disable the forward limit switch.",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "name": "Forward Limit Type",
+                "summary": "Determines if the forward limit switch is normally-open (default) or normally-closed.",
+                "ordinal": 0,
+                "type": "ForwardLimitTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1928,
+                "signal_name": "Config_ForwardLimitType",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "NormallyOpen",
+                "enum_values": [
+                  {
+                    "name": "NormallyOpen",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "NormallyClosed",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "name": "Reverse Limit Autoset Position Enable",
+                "summary": "If enabled, the position is automatically set to a specific value, specified by ReverseLimitAutosetPositionValue, when the reverse limit switch is asserted.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1935,
+                "signal_name": "Config_ReverseLimitAutosetPosEnable",
+                "default_value": 0,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Enable",
+                "summary": "If enabled, motor output is set to neutral when reverse limit switch is asseted and negative output is requested.",
+                "ordinal": 0,
+                "type": "bool",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1937,
+                "signal_name": "Config_ReverseLimitEnable",
+                "default_value": 1,
+                "value": 0,
+                "param_value": false,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Remote Sensor ID",
+                "summary": "Device ID of the remote device if using remote limit switch features for the reverse limit switch.",
+                "ordinal": 0,
+                "type": "int",
+                "description": "",
+                "units": "",
+                "min_value": 0,
+                "max_value": 62,
+                "signal_id": 1939,
+                "signal_name": "Config_ReverseLimitRemoteSensorID",
+                "default_value": 0,
+                "value": 0,
+                "param_value": 0,
+                "enum_values": []
+              },
+              {
+                "name": "Reverse Limit Source",
+                "summary": "Determines where to poll the reverse limit switch.  This defaults to the reverse limit switch pin on the limit switch connector.\n\nChoose RemoteTalonFX to use the reverse limit switch attached to another Talon FX on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).\n\nChoose RemoteCANifier to use the reverse limit switch attached to another CANifier on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).\n\nChoose RemoteCANcoder to use another CANcoder on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                "ordinal": 0,
+                "type": "ReverseLimitSourceValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1938,
+                "signal_name": "Config_ReverseLimitSource",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "LimitSwitchPin",
+                "enum_values": [
+                  {
+                    "name": "LimitSwitchPin",
+                    "comment": "Use the reverse limit switch pin on the limit switch connector.",
+                    "value": 0
+                  },
+                  {
+                    "name": "RemoteTalonFX",
+                    "comment": "Use the reverse limit switch attached to another Talon FX on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).",
+                    "value": 1
+                  },
+                  {
+                    "name": "RemoteCANifier",
+                    "comment": "Use the reverse limit switch attached to another CANifier on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).",
+                    "value": 2
+                  },
+                  {
+                    "name": "RemoteCANcoder",
+                    "comment": "Use another CANcoder on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANcoder magnet strength changes from BAD (red) to ADEQUATE (orange) or GOOD (green).",
+                    "value": 4
+                  },
+                  {
+                    "name": "RemoteCANrange",
+                    "comment": "Use another CANrange on the same CAN bus (this also requires setting ReverseLimitRemoteSensorID).  The reverse limit will assert when the CANrange proximity detect is tripped.",
+                    "value": 6
+                  },
+                  {
+                    "name": "RemoteCANdiS1",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when the CTR Electronics\u0027 CANdi\u2122 Signal 1 Input (S1IN) pin matches the configured closed state.",
+                    "value": 7
+                  },
+                  {
+                    "name": "RemoteCANdiS2",
+                    "comment": "Use another CTR Electronics\u0027 CANdi\u2122 on the same CAN bus (this also requires setting ForwardLimitRemoteSensorID).  The forward limit will assert when CANdi\u2122 Signal 2 Input (S2IN) pin matches the configured closed state.",
+                    "value": 8
+                  },
+                  {
+                    "name": "Disabled",
+                    "comment": "Disable the reverse limit switch.",
+                    "value": 3
+                  }
+                ]
+              },
+              {
+                "name": "Reverse Limit Type",
+                "summary": "Determines if the reverse limit switch is normally-open (default) or normally-closed.",
+                "ordinal": 0,
+                "type": "ReverseLimitTypeValue",
+                "description": "",
+                "units": "",
+                "min_value": -1.7976931348623157E+308,
+                "max_value": 1.7976931348623157E+308,
+                "signal_id": 1934,
+                "signal_name": "Config_ReverseLimitType",
+                "default_value": 0,
+                "value": 0,
+                "param_value": "NormallyOpen",
+                "enum_values": [
+                  {
+                    "name": "NormallyOpen",
+                    "comment": "",
+                    "value": 0
+                  },
+                  {
+                    "name": "NormallyClosed",
+                    "comment": "",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Motion Magic",
+            "summary": "Configs for Motion Magic\u00AE.",
+            "description": "Includes Velocity, Acceleration, Jerk, and Expo parameters.",
+            "ordinal": -2,
+            "configs": [
+              {
+                "name": "Motion Magic Cruise Velocity",
+                "summary": "This is the maximum velocity Motion Magic\u00AE based control modes are allowed to use.  Motion Magic\u00AE Velocity control modes do not use this config.\n\nWhen using Motion Magic\u00AE Expo control modes, setting this to 0 will allow the profile to run to the max possible velocity based on Expo_kV.",
+                "ordinal": -5,
+                "type": "double",
+                "description": "",
+                "units": "rot per sec",
+                "min_value": 0,
+                "max_value": 9999,
+                "signal_id": 1944,
+                "signal_name": "Config_MotionMagicCruiseVelocity",
+                "default_value": 0,
+                "value": 20,
+                "param_value": 20,
+                "enum_values": []
+              },
+              {
+                "name": "Motion Magic Acceleration",
+                "summary": "This is the target acceleration Motion Magic\u00AE based control modes are allowed to use.  Motion Magic\u00AE Expo control modes do not use this config.",
+                "ordinal": -4,
+                "type": "double",
+                "description": "",
+                "units": "rot per sec\u00B2",
+                "min_value": 0,
+                "max_value": 9999,
+                "signal_id": 1945,
+                "signal_name": "Config_MotionMagicAcceleration",
+                "default_value": 0,
+                "value": 100,
+                "param_value": 100,
+                "enum_values": []
+              }
+            ]
+          }
+        ]
+      },
+      "motor_arrangement": "",
+      "orientation": "CounterClockwise_Positive",
+      "leader": {
+        "name": "motor_id_50",
+        "motor_alignment": "Opposed"
+      },
+      "selected_attached_motor": null
+    }
+  ],
+  "setpoints": [
+    {
+      "name": "Top",
+      "target_rot": 7,
+      "is_setpoint_running": true
+    },
+    {
+      "name": "Ground",
+      "target_rot": 6,
+      "is_setpoint_running": false
+    }
+  ]
+}
